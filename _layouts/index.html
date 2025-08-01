@@ -14,7 +14,9 @@ layout: default
     <div class="modulo">
       <div class="modulo-titulo">📁 {{ modulo }}</div>
       <ul class="apuntes">
+        {% assign apuntes_ordenados = site.apuntes | sort: "date" %}
         {% for apunte in apuntes_ordenados %}
+
         {% if apunte.modulo == modulo %}
         <li>
           <a href="{{ apunte.url | relative_url }}">
