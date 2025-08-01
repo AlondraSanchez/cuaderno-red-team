@@ -1,0 +1,31 @@
+---
+layout: default
+---
+
+<div class="home">
+  <h1 class="page-heading">Índice general</h1>
+
+  {% assign apuntes_ordenados = site.apuntes | sort: 'modulo' %}
+
+  {% assign modulos = apuntes_ordenados | map: "modulo" | uniq %}
+
+  <div class="tree-index">
+    {% for modulo in modulos %}
+    <div class="modulo">
+      <div class="modulo-titulo">📁 {{ modulo }}</div>
+      <ul class="apuntes">
+        {% for apunte in apuntes_ordenados %}
+        {% if apunte.modulo == modulo %}
+        <li>
+          <a href="{{ apunte.url | relative_url }}">
+            {{ apunte.date | date: "%b %d" }} — {{ apunte.title }}
+          </a>
+        </li>
+        {% endif %}
+        {% endfor %}
+      </ul>
+
+    </div>
+    {% endfor %}
+  </div>
+</div>
