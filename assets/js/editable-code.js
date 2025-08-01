@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
   document.querySelectorAll("pre > code").forEach((codeBlock) => {
-    const language = codeBlock.className.replace("language-", "") || "código";
+    const language = codeBlock.className.replace("language-", "") || "Bash";
     const codeText = codeBlock.textContent;
 
     // Crea elementos

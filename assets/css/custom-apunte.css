@@ -2,6 +2,10 @@ html {
   scroll-behavior: smooth;
 }
 
+textarea {
+  field-sizing: content;
+}
+
 .apunte-grid {
   display: flex;
   gap: 2rem;
