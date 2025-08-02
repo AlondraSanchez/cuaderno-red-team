@@ -1,0 +1,44 @@
+.tree-index {
+  font-family: "Fira Code", monospace;
+  margin-left: 1rem;
+}
+
+.modulo {
+  margin-bottom: 1.5em;
+  position: relative;
+}
+
+.modulo-titulo {
+  font-weight: bold;
+  font-size: 1.2em;
+  margin-bottom: 0.5em;
+}
+
+.apuntes {
+  list-style: none;
+  padding-left: 1.5em;
+  border-left: 2px solid #ccc;
+  margin: 0;
+}
+
+.apuntes a {
+  text-decoration: none;
+  color: #444;
+  transition: color 0.2s ease;
+}
+
+.apuntes a:hover {
+  color: #e91e63;
+}
+
+.apuntes li::before {
+  content: "├── ";
+  position: absolute;
+  left: -0.2em;
+  color: #aaa;
+  font-weight: bold;
+}
+
+.apuntes li:last-child::before {
+  content: "└── ";
+}

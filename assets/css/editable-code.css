@@ -1,0 +1,73 @@
+.editable-code-wrapper {
+  position: relative;
+  margin-bottom: 1.5em;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  overflow: hidden;
+  font-family: monospace;
+}
+
+.editable-code-header {
+  background-color: #f8fbff;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.4em 0.8em;
+  font-size: 0.85em;
+  text-transform: uppercase;
+  font-weight: bold;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.editable-copy-btn {
+  background-color: #edf2f7;
+  border: none;
+  padding: 0.2em 0.5em;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.editable-copy-btn:hover {
+  background-color: #e2e8f0;
+}
+
+.editable-code-text {
+  width: 100%;
+  padding: 0.8em;
+  border: none;
+  font-family: monospace;
+  font-size: 0.95em;
+  resize: vertical;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  background-color: #fefefe;
+  border-top: 1px solid #e2e8f0;
+}
+
+/* Transiciones suaves */
+.editable-code-text,
+.editable-code-wrapper pre {
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  background-color: rgb(255, 255, 255);
+  border: 0px;
+  border-radius: 0px;;
+  margin:0px;
+}
+
+/* Cuando ocultamos */
+.editable-code-text.fade-out,
+.editable-code-wrapper pre.fade-out {
+  opacity: 0;
+  transform: scale(0.98);
+}
+
+/* Cuando mostramos */
+.editable-code-text.fade-in,
+.editable-code-wrapper pre.fade-in {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.highlight{
+    border-radius: 10px;
+}
