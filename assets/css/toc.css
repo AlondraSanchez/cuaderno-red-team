@@ -1,14 +1,17 @@
 .toc-sidebar {
+  position: sticky;
   flex: 1;
   width: 100%;
   height: fit-content;
   background: #fef9ff;
   border-left: 3px #add8e6;
   padding: 1rem;
-  border-radius: 1rem;
   font-size: 0.9rem;
   overflow-y: auto;
   box-shadow: 0 0 5px rgba(0,0,0,0.05);
+  top: 2rem;
+  border-radius: 10px;
+  max-height: 80vh;
 }
 
 .toc-sidebar h2 {
