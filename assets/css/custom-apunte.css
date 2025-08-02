@@ -7,15 +7,20 @@ textarea {
 }
 
 .apunte-grid {
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr 280px;
   gap: 2rem;
-  align-items: flex-start;
 }
 
 /* El contenido del apunte */
 .post {
   flex: 3;
-  min-width: 700px;
+  min-width: 790px;
+  max-width: 800px; /* Tamaño máximo legible en pantallas grandes */
+  width: 100%;
+  margin: 0 auto; /* Centrado horizontal */
+  padding: 1rem; /* Espaciado interior */
+  box-sizing: border-box;
 }
 
 .post-content h1 {
@@ -35,6 +40,7 @@ textarea {
   margin-top: 1.2rem;
 }
 
+/*------------------------------Admonitions----------------------------------------*/
 .admonition {
   border-left: 5px solid var(--color);
   border-radius: 0.75rem;
@@ -85,4 +91,19 @@ textarea {
 .admonition-bug {
   --color: #F8F988;
   --bg: #efefe9;
+}
+
+@media screen and (max-width: 1480px) {
+  .toc-sidebar {
+    display: none;
+  }
+
+  .apunte-grid {
+    display: block;
+  }
+
+    .post {
+    min-width: 100%;
+    padding: 1rem; /* Espaciado en móvil */
+  }
 }

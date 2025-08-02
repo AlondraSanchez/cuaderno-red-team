@@ -7,27 +7,28 @@ layout: default
 
     <header class="post-header">
       {%- if page.fecha -%}
-        <time class="dt-published" datetime="{{ page.fecha | date_to_xmlschema }}" itemprop="datePublished">
-          {%- assign date_format = site.minima.date_format | default: "%b %-d, %Y" -%}
-          {{ page.date | date: date_format }}
-        </time>
+      <time class="dt-published" datetime="{{ page.fecha | date_to_xmlschema }}" itemprop="datePublished">
+        {%- assign date_format = site.minima.date_format | default: "%b %-d, %Y" -%}
+        {{ page.date | date: date_format }}
+      </time>
       {%- endif -%}
 
       {%- if page.modulo -%}
-        <p class="post-meta"><strong>Módulo:</strong> {{ page.modulo }}</p>
+      <p class="post-meta"><strong>Módulo:</strong> {{ page.modulo }}</p>
       {%- endif -%}
 
       <h1 class="post-title p-name" itemprop="name headline">{{ page.title | escape }}</h1>
 
       {%- if page.vm -%}
-        <p class="post-meta"><strong>💻 VM utilizada:</strong> <a href="{{ page.vm }}" target="_blank">{{ page.vm }}</a></p>
+      <p class="post-meta"><strong>💻 VM utilizada:</strong> <a href="{{ page.vm }}" target="_blank">{{ page.vm }}</a>
+      </p>
       {%- endif -%}
 
       <p class="post-meta">
         {%- if page.author -%}
-          • <span itemprop="author" itemscope itemtype="http://schema.org/Person">
-            <span class="p-author h-card" itemprop="name">{{ page.author }}</span>
-          </span>
+        • <span itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <span class="p-author h-card" itemprop="name">{{ page.author }}</span>
+        </span>
         {%- endif -%}
       </p>
     </header>
@@ -36,20 +37,16 @@ layout: default
       {{ content }}
     </div>
 
-    {%- if site.disqus.shortname -%}
-      {%- include disqus_comments.html -%}
-    {%- endif -%}
-
     <a class="u-url" href="{{ page.url | relative_url }}" hidden></a>
   </article>
 
   <aside class="toc-sidebar">
-  <div class="toc-box">
-    <h2>Tabla de contenidos</h2>
-    <nav id="toc-scrollspy">
-      <!-- Aquí se generará dinámicamente -->
-    </nav>
-  </div>
-</aside>
+    <div class="toc-box">
+      <h2>Tabla de contenidos</h2>
+      <nav id="toc-scrollspy">
+        <!-- Aquí se generará dinámicamente -->
+      </nav>
+    </div>
+  </aside>
 
 </div>
