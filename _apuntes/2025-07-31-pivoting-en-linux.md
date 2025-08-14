@@ -1,19 +1,18 @@
 ---
-title: Pivoting
+title: Pivoting en Linux
 modulo: M7 - Movimientos laterales
 fecha: 2025-07-31
 layout: apunte
 slug: 2025-07-31-pivoting
 vm: https://drive.google.com/drive/folders/10MdL2c8EpwijxsweVVdln4J5d1KG9v9v
 ---
-# 🐇Pivoting
 >[!abstract] Definición:
 >**Pivoting** es el proceso de usar una máquina comprometida como trampolín para acceder a otras máquinas en la red que serían inaccesibles directamente desde la máquina atacante.
 
 # 💻Práctica
 >[!note] **Preámbulo**:
 >Para esta práctica, partimos de las siguientes máquinas:
->🔹 **Pivoting VM** (Credenciales ubuntu/ubuntu)
+>🔹**Pivoting VM** (Credenciales ubuntu/ubuntu)
 > 🔹**Pivoting VM 2** (Credenciales ubuntu/Pivoting2341)
 > 🔹**Pivoting VM 3** (Credenciales ubuntu/3412Pivoting)
 
@@ -65,7 +64,7 @@ ip a
 sudo arp-scan -l -I eth0
 ```
 
-**En mi caso**, la IP para la máquina **Pivoting VM en la red *VLAN20*** es la `10.0.20.5`, y la IP de la **Kali** es `10.0.20.4`.
+**En mi caso**, la IP para la máquina **Pivoting VM** en la red *VLAN20* es la `10.0.20.5`, y la IP de la **Kali** es `10.0.20.4`.
 
 Una vez conocida la IP, **abrimos una nueva terminal llamada SSH Piv1** donde nos conectamos mediante ssh a la **Pivoting VM**
 ```bash
@@ -117,7 +116,7 @@ ls -la /etc | grep proxychain
 
 En mi caso, el archivo es `proxychains4.conf` → Consultamos este archivo con `cat` o, editamos directamente con `sudo nano` (es importante lanzarlo con `sudo` para que los cambios se guarden).
 
-**¿Qué debemos tener en el archivo?** → Las siguientes líneas deben estar **descomentadas** (que no aparezca el símbolo `#` al principio). En la *ProxyList* debe decir *socks5* y apuntar al puerto que abrimos anteriormente.
+**¿Qué debemos tener en el archivo?** → Las siguientes líneas deben estar **descomentadas** (que no aparezca el símbolo `#` al principio).
 ```
 dynamic_chain
 proxy_dns
@@ -127,6 +126,8 @@ tcp_connect_time_out 8000
 [ProxyList]
 socks5 127.0.0.1 9050
 ```
+
+En la *ProxyList* debe decir *socks5* y apuntar al puerto que abrimos anteriormente.
 
 **Escaneamos la red *VLAN30* desde la Kali:**
 ```bash
@@ -237,7 +238,7 @@ Una vez que logramos el objetivo, podemos cerrar la terminal llamada "-D 9050"
 | VLAN30 | `10.0.30.5` | Pivoting VM 2 |
 
 
-## 🦘Etapa 3: Pivotando a Pivoting VM 2
+## 🐇Etapa 3: Pivotando a Pivoting VM 2
 >[!question] Qué terminales hay que tener antes de comenzar?:
 >→ **Kali** para todos los comandos relacionados a la Kali
 
@@ -311,6 +312,7 @@ sudo proxychains nmap -sT -Pn -n -p 20,80 10.0.40.3-20
 O bien, utilizando el `script_proxychains.sh` **cambiando los parámetros para que escanee la VLAN40**.
 
 De este escaneo, se obtiene la IP de la máquina **Pivoting VM 3**, que en mi caso es `10.0.40.5`. Ya podemos cerrar la terminal llamada "-D 9050 Piv2".
+
 ![[pivoting_proxychains_en_vm2.png]]
 
 **IPs identificadas hasta ahora**

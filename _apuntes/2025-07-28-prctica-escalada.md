@@ -52,7 +52,7 @@ gcc -pthread c0w.c -o dirtyc0w
 ./dirtyc0w
 ```
  
- Una vez ejecutado, **para escalar privilegios** solo hace falta escribir el comando `paswd`
+ Una vez ejecutado, **para escalar privilegios** solo hace falta escribir el comando `passwd`
  **🎉 Escalada conseguida**
 
 
